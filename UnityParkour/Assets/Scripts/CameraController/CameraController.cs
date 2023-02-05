@@ -27,6 +27,11 @@ public class CameraController : MonoBehaviour
 	#endregion private-field
 
 	#region MonoBehaviour-method
+	private void Awake()
+	{
+		CameraTransformProvider.Instance.SetTransform(transform);
+	}
+
 	private void Update()
 	{
 		SetCameraPos();
