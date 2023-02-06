@@ -101,6 +101,10 @@ public class PlayerController : MonoBehaviour
 
 	private void LerpRotation(Vector3 moveDir)
 	{
+		if (moveDir.magnitude <= 0)
+		{
+			return;
+		}
 		var cur = transform.rotation;
 		var target = Quaternion.LookRotation(moveDir);
 		var res = Quaternion.RotateTowards(cur, target, _rotateSpeed * Time.deltaTime);

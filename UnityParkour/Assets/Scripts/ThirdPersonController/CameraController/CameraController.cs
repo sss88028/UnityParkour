@@ -43,8 +43,8 @@ public class CameraController : MonoBehaviour
 	{
 		var invertXVal = _isInvertX ? -1 : 1;
 		var invertYVal = _isInvertY ? -1 : 1;
-		_rotationY += (Input.GetAxis("Mouse X") * _rotateSpeed) * invertYVal;
-		_rotationX -= (Input.GetAxis("Mouse Y") * _rotateSpeed) * invertXVal;
+		_rotationY += (Input.GetAxis("Camera X") * _rotateSpeed) * invertYVal;
+		_rotationX -= (Input.GetAxis("Camera Y") * _rotateSpeed) * invertXVal;
 		_rotationX = Mathf.Clamp(_rotationX, _minVerticalAngle, _maxVerticalAngle);
 		var q = Quaternion.Euler(_rotationX, _rotationY, 0);
 
