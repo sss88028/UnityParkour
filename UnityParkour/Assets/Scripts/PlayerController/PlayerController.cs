@@ -10,6 +10,10 @@ public class PlayerController : MonoBehaviour
 	private float _speed = 5;
 	[SerializeField]
 	private float _rotateSpeed = 500f;
+	[SerializeField]
+	private Animator _playerAnimator;
+	[SerializeField]
+	private string _paramertName = "MoveAmount";
 
 	private Transform _currentTransform;
 	#endregion private-field
@@ -38,16 +42,18 @@ public class PlayerController : MonoBehaviour
 		var v = Input.GetAxis("Vertical");
 
 		var moveAmount = Math.Abs(h)+ Math.Abs(v);
+		var moveInput = (new Vector3(h, 0, v)).normalized;
 
 		if (moveAmount > 0)
 		{
-			var moveInput = (new Vector3(h, 0, v)).normalized;
-
 			var moveDir = GetCameraRotation() * moveInput;
 
 			transform.position += moveDir * _speed * Time.deltaTime;
 			LerpRotation(moveDir);
 		}
+
+		_playerAnimator?.SetFloat(_paramertName, moveInput.magnitude, 0.2f, Time.deltaTime);
+
 	}
 
 	private void LerpRotation(Vector3 moveDir)

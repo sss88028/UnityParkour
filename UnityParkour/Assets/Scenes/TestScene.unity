@@ -371,7 +371,7 @@ MonoBehaviour:
   _target: {fileID: 1961393155}
   _distanceFixer: {x: 0, y: 1, z: -5}
   _rotateSpeed: 2
-  _minVerticalAngle: -45
+  _minVerticalAngle: -20
   _maxVerticalAngle: 45
   _isInvertX: 0
   _isInvertY: 0
@@ -836,6 +836,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 5
   _rotateSpeed: 500
+  _playerAnimator: {fileID: 1961393156}
+  _paramertName: MoveAmount
 --- !u!4 &1961393155
 Transform:
   m_ObjectHideFlags: 0
