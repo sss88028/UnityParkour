@@ -23,7 +23,7 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
-		_environmentScanner.ObstacleCheck(out var hitInfo);
+		_environmentScanner.ObstacleCheck(out var hitInfo, out var hieghtInfo);
 	}
 	#endregion private-method
 }
