@@ -30,7 +30,24 @@ public class PlayerController : MonoBehaviour
 
 	private Transform _currentTransform;
 	private Vector3 _fallSpeed = Vector3.zero;
+	private bool _hasControl = true;
 	#endregion private-field
+
+	#region public-property
+	public bool HasControl
+	{
+		set 
+		{
+			_hasControl = value;
+			_characterController.enabled = _hasControl;
+
+			if (_hasControl)
+			{
+				_playerAnimator?.SetFloat(_parameterName, 0);
+			}
+		}
+	}
+	#endregion public-property
 
 	#region MonoBehaviour-method
 	private void Awake()
@@ -68,10 +85,13 @@ public class PlayerController : MonoBehaviour
 	#region private-method
 	private void UpdatePos() 
 	{
+		if (!_hasControl) 
+		{
+			return;
+		}
 		var h = Input.GetAxis("Horizontal");
 		var v = Input.GetAxis("Vertical");
 
-		var moveAmount = Math.Abs(h)+ Math.Abs(v);
 		var moveInput = (new Vector3(h, 0, v)).normalized;
 
 		var isGround = GroundCheck();
