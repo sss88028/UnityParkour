@@ -1387,7 +1387,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: c40eb471cdc51984c8660b51c411559e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -1443,5 +1443,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _environmentScanner: {fileID: 1961393158}
   _playerController: {fileID: 1961393154}
+  _parkourActions:
+  - {fileID: 11400000, guid: 43acd592dba71954ab1f6741c04807dd, type: 2}
+  - {fileID: 11400000, guid: 12d37b08dd844db408f62db2235765d2, type: 2}
   _animator: {fileID: 1961393156}
-  _stateName: StepUp

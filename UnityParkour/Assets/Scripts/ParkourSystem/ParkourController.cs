@@ -11,11 +11,11 @@ public class ParkourController : MonoBehaviour
 	private EnvironmentScanner _environmentScanner;
 	[SerializeField]
 	private PlayerController _playerController;
+	[SerializeField]
+	private List<ParkourAction> _parkourActions = new List<ParkourAction>();
 
 	[SerializeField]
 	private Animator _animator;
-	[SerializeField]
-	private string _stateName = "StepUp";
 
 	private bool _isInAction = false;
 	#endregion private-field
@@ -28,7 +28,7 @@ public class ParkourController : MonoBehaviour
 	#endregion MonoBehaviour-method
 
 	#region private-method
-	private async void CheckEnvironment() 
+	private void CheckEnvironment() 
 	{
 		if (_environmentScanner == null) 
 		{
@@ -45,14 +45,31 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
+		foreach (var action in _parkourActions) 
+		{
+			if (action.CheckIsPossible(hieghtInfo, transform)) 
+			{
+				DoAction(action.StateName);
+				break;
+			}
+		}
+	}
+
+	private async void DoAction(string actionName)
+	{
 		_isInAction = true;
 		_playerController.HasControl = false;
-		_animator.CrossFade(_stateName, 0.2f);
+		_animator.CrossFade(actionName, 0.2f);
 
 		await Task.Yield();
 		var animatorInfo = _animator.GetNextAnimatorStateInfo(0);
+		if (!animatorInfo.IsName(actionName)) 
+		{
+			Debug.LogError($"[ParkourController.DoAction] actionName \"{actionName}\" not exist.");
+		}
 
-		await Task.Delay((int)(animatorInfo.length * 1000));
+		var waitTime = (int)(animatorInfo.length * 1000);
+		await Task.Delay(waitTime);
 		_playerController.HasControl = true;
 		_isInAction = false;
 	}
