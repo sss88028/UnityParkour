@@ -15,3 +15,8 @@ MonoBehaviour:
   _stateName: StepUp
   _minHeight: 0.3
   _maxHeight: 0.8
+  _rotateToObstacle: 0
+  _enableTargetMatching: 1
+  _matchBoyPart: 3
+  _matchStartTime: 0.3
+  _matchTargetTime: 0.51

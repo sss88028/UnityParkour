@@ -49,19 +49,19 @@ public class ParkourController : MonoBehaviour
 		{
 			if (action.CheckIsPossible(checkResult, transform)) 
 			{
-				DoAction(action);
+				StartCoroutine(DoAction(action));
 				break;
 			}
 		}
 	}
 
-	private async void DoAction(ParkourAction action)
+	private IEnumerator DoAction(ParkourAction action)
 	{
 		_isInAction = true;
 		_playerController.HasControl = false;
 		_animator.CrossFade(action.StateName, 0.2f);
 
-		await Task.Yield();
+		yield return null;
 		var animatorInfo = _animator.GetNextAnimatorStateInfo(0);
 		if (!animatorInfo.IsName(action.StateName)) 
 		{
@@ -69,18 +69,33 @@ public class ParkourController : MonoBehaviour
 		}
 		var timer = 0f;
 
-		while (timer <= animatorInfo.length) 
+		while (timer <= animatorInfo.length)
 		{
+			timer += Time.deltaTime;
 			if (action.IsRotateToObstacle) 
 			{
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, action.TargetRotation, _playerController.RotateSpeed);
 			}
-			timer += Time.deltaTime;
-			await Task.Yield();
+			if (action.EnableTargetMatching) 
+			{
+				MatchTarget(action);
+			}
+			yield return null;
 		}
 
 		_playerController.HasControl = true;
 		_isInAction = false;
+	}
+
+	private void MatchTarget(ParkourAction action) 
+	{
+		if (_animator.isMatchingTarget) 
+		{
+			return;
+		}
+
+		_animator.MatchTarget(action.MatchPos, transform.rotation, action.MatchBoyPart, 
+			new MatchTargetWeightMask(Vector3.up, 0), action.MatchStartTime, action.MatchTargetTime);
 	}
 	#endregion private-method
 }

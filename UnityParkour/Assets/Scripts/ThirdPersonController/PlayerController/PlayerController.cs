@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
 			_hasControl = value;
 			_characterController.enabled = _hasControl;
 
-			if (_hasControl)
+			if (!_hasControl)
 			{
 				_playerAnimator?.SetFloat(_parameterName, 0);
 			}

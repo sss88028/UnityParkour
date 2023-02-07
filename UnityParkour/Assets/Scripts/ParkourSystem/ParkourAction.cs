@@ -16,6 +16,18 @@ public class ParkourAction : ScriptableObject
 
     [SerializeField]
     private bool _rotateToObstacle;
+
+    [Header("Target Matching")]
+    [SerializeField]
+    private bool _enableTargetMatching = true;
+    [SerializeField]
+    private AvatarTarget _matchBoyPart;
+    [SerializeField]
+    [Range(0, 1)]
+    private float _matchStartTime;
+    [SerializeField]
+    [Range(0, 1)]
+    private float _matchTargetTime;
     #endregion private-field
 
     #region public-property
@@ -40,12 +52,50 @@ public class ParkourAction : ScriptableObject
         get;
         private set;
     }
+
+    public Vector3 MatchPos 
+    {
+        get;
+        private set;
+    }
+
+    public bool EnableTargetMatching
+    {
+        get
+        {
+            return _enableTargetMatching;
+        }
+    }
+
+    public AvatarTarget MatchBoyPart
+    {
+        get
+        {
+            return _matchBoyPart;
+        }
+    }
+
+    public float MatchStartTime
+    {
+        get
+        {
+            return _matchStartTime;
+        }
+    }
+
+    public float MatchTargetTime
+    {
+        get
+        {
+            return _matchTargetTime;
+        }
+    }
     #endregion public-property
 
     #region public-method
-    public bool CheckIsPossible(CheckResult checkResult, Transform player) 
+    public bool CheckIsPossible(CheckResult hitData, Transform player) 
     {
-        var height = checkResult.HeightHitInfo.point.y - player.position.y;
+        var height = hitData.HeightHitInfo.point.y - player.position.y;
 
         var isMatch = height >= _minHeight && height <= _maxHeight;
         if (!isMatch) 
@@ -55,7 +105,12 @@ public class ParkourAction : ScriptableObject
 
         if (_rotateToObstacle) 
         {
-            TargetRotation = Quaternion.LookRotation(-checkResult.ForwardHitInfo.normal);
+            TargetRotation = Quaternion.LookRotation(-hitData.ForwardHitInfo.normal);
+        }
+
+        if (_enableTargetMatching)
+        {
+            MatchPos = hitData.HeightHitInfo.point;
         }
 
         return isMatch;
