@@ -47,29 +47,38 @@ public class ParkourController : MonoBehaviour
 		}
 		foreach (var action in _parkourActions) 
 		{
-			if (action.CheckIsPossible(hieghtInfo, transform)) 
+			if (action.CheckIsPossible(hitInfo, hieghtInfo, transform)) 
 			{
-				DoAction(action.StateName);
+				DoAction(action);
 				break;
 			}
 		}
 	}
 
-	private async void DoAction(string actionName)
+	private async void DoAction(ParkourAction action)
 	{
 		_isInAction = true;
 		_playerController.HasControl = false;
-		_animator.CrossFade(actionName, 0.2f);
+		_animator.CrossFade(action.StateName, 0.2f);
 
 		await Task.Yield();
 		var animatorInfo = _animator.GetNextAnimatorStateInfo(0);
-		if (!animatorInfo.IsName(actionName)) 
+		if (!animatorInfo.IsName(action.StateName)) 
 		{
-			Debug.LogError($"[ParkourController.DoAction] actionName \"{actionName}\" not exist.");
+			Debug.LogError($"[ParkourController.DoAction] actionName \"{action.StateName}\" not exist.");
+		}
+		var timer = 0f;
+
+		while (timer <= animatorInfo.length) 
+		{
+			if (action.IsRotateToObstacle) 
+			{
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, action.TargetRotation, _playerController.RotateSpeed);
+			}
+			timer += Time.deltaTime;
+			await Task.Yield();
 		}
 
-		var waitTime = (int)(animatorInfo.length * 1000);
-		await Task.Delay(waitTime);
 		_playerController.HasControl = true;
 		_isInAction = false;
 	}

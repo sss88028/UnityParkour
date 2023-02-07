@@ -15,3 +15,4 @@ MonoBehaviour:
   _stateName: JumpUp
   _minHeight: 0.8
   _maxHeight: 1.5
+  _rotateToObstacle: 1

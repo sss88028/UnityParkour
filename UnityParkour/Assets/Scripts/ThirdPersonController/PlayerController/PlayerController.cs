@@ -47,6 +47,14 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
+
+	public float RotateSpeed 
+	{
+		get 
+		{
+			return _rotateSpeed;
+		}
+	}
 	#endregion public-property
 
 	#region MonoBehaviour-method
