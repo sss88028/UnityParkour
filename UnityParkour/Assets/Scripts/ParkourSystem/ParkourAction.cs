@@ -43,9 +43,9 @@ public class ParkourAction : ScriptableObject
     #endregion public-property
 
     #region public-method
-    public bool CheckIsPossible(RaycastHit hitInfo, RaycastHit heightInfo, Transform player) 
+    public bool CheckIsPossible(CheckResult checkResult, Transform player) 
     {
-        var height = heightInfo.point.y - player.position.y;
+        var height = checkResult.HeightHitInfo.point.y - player.position.y;
 
         var isMatch = height >= _minHeight && height <= _maxHeight;
         if (!isMatch) 
@@ -55,7 +55,7 @@ public class ParkourAction : ScriptableObject
 
         if (_rotateToObstacle) 
         {
-            TargetRotation = Quaternion.LookRotation(-hitInfo.normal);
+            TargetRotation = Quaternion.LookRotation(-checkResult.ForwardHitInfo.normal);
         }
 
         return isMatch;

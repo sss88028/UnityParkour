@@ -18,27 +18,31 @@ public class EnvironmentScanner : MonoBehaviour
 	#endregion private-field
 
 	#region public-method
-	public bool ObstacleCheck(out RaycastHit fowardHitInfo, out RaycastHit heightHitInfo) 
+	public bool ObstacleCheck(out CheckResult checkResult) 
 	{
+		checkResult = new CheckResult();
 		var origin = transform.position + _forwardRayOffset;
 		var rayDir = transform.forward;
 		
-		var isHit = Physics.Raycast(origin, rayDir, out fowardHitInfo, _forwardRayLength, _obstacleLayer);
+		var isHit = Physics.Raycast(origin, rayDir, out checkResult.ForwardHitInfo, _forwardRayLength, _obstacleLayer);
 		Debug.DrawRay(origin, rayDir * _forwardRayLength, isHit ? Color.red : Color.white);
 
 		if (isHit)
 		{
-			var hightOrigin = fowardHitInfo.point + Vector3.up * _heightRayLength;
+			var hightOrigin = checkResult.ForwardHitInfo.point + Vector3.up * _heightRayLength;
 			var hightrayDir = Vector3.down;
-			Physics.Raycast(hightOrigin, Vector3.down, out heightHitInfo, _heightRayLength, _obstacleLayer);
+			Physics.Raycast(hightOrigin, Vector3.down, out checkResult.HeightHitInfo, _heightRayLength, _obstacleLayer);
 			Debug.DrawRay(hightOrigin, hightrayDir * _heightRayLength, isHit ? Color.red : Color.white);
-		}
-		else 
-		{
-			heightHitInfo = default;
 		}
 
 		return isHit;
 	}
 	#endregion public-method
+}
+
+public struct CheckResult 
+{
+	public bool IsHit;
+	public RaycastHit ForwardHitInfo;
+	public RaycastHit HeightHitInfo;
 }

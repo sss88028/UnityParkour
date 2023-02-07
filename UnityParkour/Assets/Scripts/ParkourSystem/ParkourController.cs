@@ -40,14 +40,14 @@ public class ParkourController : MonoBehaviour
 			return;
 		}
 
-		var isObstacleFoward = _environmentScanner.ObstacleCheck(out var hitInfo, out var hieghtInfo);
+		var isObstacleFoward = _environmentScanner.ObstacleCheck(out var checkResult);
 		if (!isObstacleFoward) 
 		{
 			return;
 		}
 		foreach (var action in _parkourActions) 
 		{
-			if (action.CheckIsPossible(hitInfo, hieghtInfo, transform)) 
+			if (action.CheckIsPossible(checkResult, transform)) 
 			{
 				DoAction(action);
 				break;
