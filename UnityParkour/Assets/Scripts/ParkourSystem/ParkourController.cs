@@ -69,6 +69,7 @@ public class ParkourController : MonoBehaviour
 			Debug.LogError($"[ParkourController.DoAction] actionName \"{action.StateName}\" not exist.");
 		}
 
+		var timer = 0f;
 		while (!animatorInfo.IsName(action.FinishStateName))
 		{
 			if (action.IsRotateToObstacle) 
@@ -79,8 +80,13 @@ public class ParkourController : MonoBehaviour
 			{
 				MatchTarget(action);
 			}
+			if (_animator.IsInTransition(0) && timer > 0.5f) 
+			{
+				break;
+			}
 			await UniTask.Yield();
 			animatorInfo = _animator.GetNextAnimatorStateInfo(0);
+			timer += Time.deltaTime;
 		}
 
 		_playerController.HasControl = true;

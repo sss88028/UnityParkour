@@ -13,6 +13,8 @@ public class ParkourAction : ScriptableObject
     private float _minHeight;
     [SerializeField]
     private float _maxHeight;
+    [SerializeField]
+    private string _obstacleTag;
 
     [SerializeField]
     private bool _rotateToObstacle;
@@ -116,6 +118,11 @@ public class ParkourAction : ScriptableObject
     #region public-method
     public bool CheckIsPossible(CheckResult hitData, Transform player) 
     {
+        if (!string.IsNullOrEmpty(_obstacleTag) && hitData.ForwardHitInfo.transform.tag != _obstacleTag) 
+        {
+            return false;
+        }
+
         var height = hitData.HeightHitInfo.point.y - player.position.y;
 
         var isMatch = height >= _minHeight && height <= _maxHeight;
