@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -49,19 +50,19 @@ public class ParkourController : MonoBehaviour
 		{
 			if (action.CheckIsPossible(checkResult, transform)) 
 			{
-				StartCoroutine(DoAction(action));
+				DoAction(action);
 				break;
 			}
 		}
 	}
 
-	private IEnumerator DoAction(ParkourAction action)
+	private async void DoAction(ParkourAction action)
 	{
 		_isInAction = true;
 		_playerController.HasControl = false;
 		_animator.CrossFade(action.StateName, 0.2f);
 
-		yield return null;
+		await UniTask.Yield();
 		var animatorInfo = _animator.GetNextAnimatorStateInfo(0);
 		if (!animatorInfo.IsName(action.StateName)) 
 		{
@@ -80,7 +81,7 @@ public class ParkourController : MonoBehaviour
 			{
 				MatchTarget(action);
 			}
-			yield return null;
+			await UniTask.Yield();
 		}
 
 		_playerController.HasControl = true;
@@ -93,7 +94,6 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
-
 		_animator.MatchTarget(action.MatchPos, transform.rotation, action.MatchBoyPart, 
 			new MatchTargetWeightMask(Vector3.up, 0), action.MatchStartTime, action.MatchTargetTime);
 	}
