@@ -17,6 +17,9 @@ public class ParkourAction : ScriptableObject
     [SerializeField]
     private bool _rotateToObstacle;
 
+    [SerializeField]
+    private string _finishStateName = "Locomotion";
+
     [Header("Target Matching")]
     [SerializeField]
     private bool _enableTargetMatching = true;
@@ -28,6 +31,8 @@ public class ParkourAction : ScriptableObject
     [SerializeField]
     [Range(0, 1)]
     private float _matchTargetTime;
+    [SerializeField]
+    private Vector3 _mathcWeight = Vector3.up;
     #endregion private-field
 
     #region public-property
@@ -44,6 +49,14 @@ public class ParkourAction : ScriptableObject
         get 
         {
             return _rotateToObstacle;
+        }
+    }
+
+    public string FinishStateName
+    {
+        get
+        {
+            return _finishStateName;
         }
     }
 
@@ -88,6 +101,14 @@ public class ParkourAction : ScriptableObject
         get
         {
             return _matchTargetTime;
+        }
+    }
+
+    public Vector3 MathcWeight
+    {
+        get
+        {
+            return _mathcWeight;
         }
     }
     #endregion public-property

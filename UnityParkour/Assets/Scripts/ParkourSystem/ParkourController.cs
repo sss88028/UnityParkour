@@ -68,11 +68,9 @@ public class ParkourController : MonoBehaviour
 		{
 			Debug.LogError($"[ParkourController.DoAction] actionName \"{action.StateName}\" not exist.");
 		}
-		var timer = 0f;
 
-		while (timer <= animatorInfo.length)
+		while (!animatorInfo.IsName(action.FinishStateName))
 		{
-			timer += Time.deltaTime;
 			if (action.IsRotateToObstacle) 
 			{
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, action.TargetRotation, _playerController.RotateSpeed);
@@ -82,6 +80,7 @@ public class ParkourController : MonoBehaviour
 				MatchTarget(action);
 			}
 			await UniTask.Yield();
+			animatorInfo = _animator.GetNextAnimatorStateInfo(0);
 		}
 
 		_playerController.HasControl = true;
@@ -95,7 +94,7 @@ public class ParkourController : MonoBehaviour
 			return;
 		}
 		_animator.MatchTarget(action.MatchPos, transform.rotation, action.MatchBoyPart, 
-			new MatchTargetWeightMask(Vector3.up, 0), action.MatchStartTime, action.MatchTargetTime);
+			new MatchTargetWeightMask(action.MathcWeight, 0), action.MatchStartTime, action.MatchTargetTime);
 	}
 	#endregion private-method
 }

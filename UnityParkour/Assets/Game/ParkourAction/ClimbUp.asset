@@ -10,14 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44af623c736b48d4f9fbd37c15b4c2f2, type: 3}
-  m_Name: JumpUp
+  m_Name: ClimbUp
   m_EditorClassIdentifier: 
-  _stateName: JumpUp
-  _minHeight: 0.8
-  _maxHeight: 1.5
+  _stateName: ClimbUp
+  _minHeight: 1.5
+  _maxHeight: 2.5
   _rotateToObstacle: 1
+  _finishStateName: Locomotion
   _enableTargetMatching: 1
-  _matchBoyPart: 3
-  _matchStartTime: 0.15
-  _matchTargetTime: 0.4
-  _mathcWeight: {x: 0, y: 1, z: 0.5}
+  _matchBoyPart: 5
+  _matchStartTime: 0.08
+  _matchTargetTime: 0.28
+  _mathcWeight: {x: 0, y: 1, z: 1}
