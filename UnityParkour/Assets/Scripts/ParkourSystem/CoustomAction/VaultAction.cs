@@ -19,7 +19,6 @@ public class VaultAction : ParkourAction
 
 		hitPoint = hitData.ForwardHitInfo.transform.InverseTransformPoint(hitPoint);
 		var dot = Vector3.Dot(leftDir, hitPoint);
-		Debug.Log($"[VaultAction.CheckIsPossible] leftDir : {leftDir}, hitPoint : {hitPoint}, dot : {dot}");
 
 		Mirror = dot > 0;
 		if (Mirror)
