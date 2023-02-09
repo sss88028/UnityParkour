@@ -78,6 +78,10 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
+		if (!Input.GetButton("Jump"))
+		{
+			return;
+		}
 		_playerController.IsOnLedge = false;
 		DoAction(_jumpDownAction);
 	}

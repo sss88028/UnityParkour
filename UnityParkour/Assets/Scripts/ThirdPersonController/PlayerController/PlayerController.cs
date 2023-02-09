@@ -34,6 +34,10 @@ public class PlayerController : MonoBehaviour
 	private Transform _currentTransform;
 	private Vector3 _fallSpeed = Vector3.zero;
 	private bool _hasControl = true;
+
+	private Vector3 _desireMoveDir;
+	private Vector3 _moveDir;
+	private Vector3 _velocity;
 	#endregion private-field
 
 	#region public-property
@@ -119,28 +123,30 @@ public class PlayerController : MonoBehaviour
 
 		var isGround = GroundCheck();
 		_playerAnimator.SetBool("IsGround", isGround);
-		var moveDir = GetCameraRotation() * moveInput;
+		_desireMoveDir = GetCameraRotation() * moveInput;
+		_moveDir = _desireMoveDir;
 
-		var velocity = Vector3.zero;
+		_velocity = Vector3.zero;
 		if (!isGround)
 		{
 			_fallSpeed += _gravity * Time.deltaTime;
 
-			velocity = transform.forward * _speed / 2;
+			_velocity = transform.forward * _speed / 2;
 		}
 		else
 		{
-			velocity = moveDir * _speed;
+			_velocity = _desireMoveDir * _speed;
 			_fallSpeed.y = -0.5f;
 
-			LedgeCheck(moveDir);
+			LedgeCheck(_desireMoveDir);
+
+			_playerAnimator?.SetFloat(_parameterName, _velocity.magnitude / _speed, 0.2f, Time.deltaTime);
 		}
-		velocity.y = _fallSpeed.y;
-		_characterController.Move(velocity * Time.deltaTime);
+		_velocity.y = _fallSpeed.y;
+		_characterController.Move(_velocity * Time.deltaTime);
 
-		LerpRotation(moveDir);
+		LerpRotation(_moveDir);
 
-		_playerAnimator?.SetFloat(_parameterName, moveInput.magnitude, 0.2f, Time.deltaTime);
 	}
 
 	private bool GroundCheck() 
@@ -159,6 +165,18 @@ public class PlayerController : MonoBehaviour
 		if (IsOnLedge) 
 		{
 			LedgeHitData = ledgeHitData;
+			LedgeMovement();
+		}
+	}
+
+	private void LedgeMovement()
+	{
+		var dotRes = Vector3.Dot(LedgeHitData.SurfaceHitInfo.normal, _desireMoveDir);
+
+		if (dotRes > 0)
+		{
+			_velocity = Vector3.zero;
+			_moveDir = Vector3.zero;
 		}
 	}
 
