@@ -15,6 +15,11 @@ public class EnvironmentScanner : MonoBehaviour
 	[Header("Height")]
 	[SerializeField]
 	private float _heightRayLength = 5f;
+	[Header("Ledge")]
+	[SerializeField]
+	private float _ledgeRayLength;
+	[SerializeField]
+	private float _ledgeHeightThreshold = 0.75f;
 	#endregion private-field
 
 	#region public-method
@@ -37,6 +42,28 @@ public class EnvironmentScanner : MonoBehaviour
 		}
 
 		return isHit;
+	}
+
+	public bool LedgeCheck(Vector3 moveDir) 
+	{
+		if (moveDir == Vector3.zero)
+		{
+			return false;
+		}
+		var originOffset = 0.5f;
+		var origin = transform.position + moveDir * originOffset + Vector3.up;
+		var isHit = Physics.Raycast(origin, Vector3.down, out var hitData, _ledgeRayLength, _obstacleLayer);
+		if (isHit) 
+		{
+			var height = transform.position.y - hitData.point.y;
+			if (height > _ledgeHeightThreshold) 
+			{
+				return true;
+			}
+		}
+
+		Debug.DrawRay(origin, Vector3.down * _ledgeRayLength, isHit ? Color.green : Color.blue);
+		return false;
 	}
 	#endregion public-method
 }

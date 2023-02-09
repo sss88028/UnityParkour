@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private Vector3 _gravity = new Vector3(0, -9.8f, 0);
 
+	[SerializeField]
+	private EnvironmentScanner _environmentScanner;
+
 	private Transform _currentTransform;
 	private Vector3 _fallSpeed = Vector3.zero;
 	private bool _hasControl = true;
@@ -54,6 +57,12 @@ public class PlayerController : MonoBehaviour
 		{
 			return _rotateSpeed;
 		}
+	}
+
+	public bool IsOnLedge 
+	{
+		get;
+		private set;
 	}
 	#endregion public-property
 
@@ -113,6 +122,8 @@ public class PlayerController : MonoBehaviour
 		else 
 		{
 			_fallSpeed.y = -0.5f;
+
+			LedgeCheck(moveDir);
 		}
 		velocity.y = _fallSpeed.y;
 		_characterController.Move(velocity * Time.deltaTime);
@@ -125,6 +136,15 @@ public class PlayerController : MonoBehaviour
 	private bool GroundCheck() 
 	{
 		return Physics.CheckSphere(transform.TransformPoint(_groundCheckOffset), _groundCheckRadius, _groundCheckLayer);
+	}
+
+	private void LedgeCheck(Vector3 moveDir) 
+	{
+		if (_environmentScanner == null) 
+		{
+			return;
+		}
+		IsOnLedge = _environmentScanner.LedgeCheck(moveDir);
 	}
 
 	private void LerpRotation(Vector3 moveDir)

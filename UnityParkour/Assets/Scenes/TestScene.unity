@@ -1552,6 +1552,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   _gravity: {x: 0, y: -9.8, z: 0}
+  _environmentScanner: {fileID: 1961393158}
 --- !u!4 &1961393155
 Transform:
   m_ObjectHideFlags: 0
@@ -1622,6 +1623,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   _heightRayLength: 5
+  _ledgeRayLength: 0
+  _ledgeHeightThreshold: 0.75
 --- !u!114 &1961393159
 MonoBehaviour:
   m_ObjectHideFlags: 0
