@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
 	private Vector3 _desireMoveDir;
 	private Vector3 _moveDir;
 	private Vector3 _velocity;
+	private Quaternion _targetRotation;
 	#endregion private-field
 
 	#region public-property
@@ -120,6 +121,7 @@ public class PlayerController : MonoBehaviour
 		var v = Input.GetAxis("Vertical");
 
 		var moveInput = (new Vector3(h, 0, v)).normalized;
+		var moveAmount = Mathf.Clamp01(Mathf.Abs(h) + Mathf.Abs(v));
 
 		var isGround = GroundCheck();
 		_playerAnimator.SetBool("IsGround", isGround);
@@ -145,7 +147,7 @@ public class PlayerController : MonoBehaviour
 		_velocity.y = _fallSpeed.y;
 		_characterController.Move(_velocity * Time.deltaTime);
 
-		LerpRotation(_moveDir);
+		LerpRotation(moveAmount, _moveDir);
 
 	}
 
@@ -192,15 +194,14 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void LerpRotation(Vector3 moveDir)
+	private void LerpRotation(float moveAmount, Vector3 moveDir)
 	{
-		if (moveDir.magnitude <= 0)
+		if (moveAmount > 0 && moveDir.magnitude > 0.2f)
 		{
-			return;
+			_targetRotation = Quaternion.LookRotation(moveDir);
 		}
 		var cur = transform.rotation;
-		var target = Quaternion.LookRotation(moveDir);
-		var res = Quaternion.RotateTowards(cur, target, _rotateSpeed * Time.deltaTime);
+		var res = Quaternion.RotateTowards(cur, _targetRotation, _rotateSpeed * Time.deltaTime);
 		transform.rotation = res;
 	}
 
