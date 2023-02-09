@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnvironmentScanner : MonoBehaviour
@@ -53,17 +54,27 @@ public class EnvironmentScanner : MonoBehaviour
 		}
 		var originOffset = 0.5f;
 		var origin = transform.position + moveDir * originOffset + Vector3.up;
-		var isHit = Physics.Raycast(origin, Vector3.down, out var hitData, _ledgeRayLength, _obstacleLayer);
+
+		var isHit = PhysicsUtil.ThreeRaycasts(origin, Vector3.down, 0.25f, transform, 
+			out var hitDatas, _ledgeRayLength, _obstacleLayer, true);
 		if (isHit)
 		{
-			var surfaceRayOrigin = transform.position + moveDir + Vector3.down * 0.1f;
-			var isHitSurface = Physics.Raycast(surfaceRayOrigin, -moveDir, out var surfaceHit, 2, _obstacleLayer);
-
-			if (isHitSurface)
+			var resHitData = from h in hitDatas
+							 where transform.position.y - h.point.y > _ledgeHeightThreshold
+							 select h;
+			
+			if (resHitData.Any())
 			{
-				var height = transform.position.y - hitData.point.y;
-				if (height > _ledgeHeightThreshold)
+				var surfaceRayOrigin = resHitData.FirstOrDefault().point;
+				surfaceRayOrigin.y = transform.position.y - 0.1f;
+				var dir = transform.position - surfaceRayOrigin;
+				var isHitSurface = Physics.Raycast(surfaceRayOrigin, dir, out var surfaceHit, 2, _obstacleLayer);
+
+				Debug.DrawLine(surfaceRayOrigin, transform.position, isHitSurface ? Color.cyan : Color.white);
+				if (isHitSurface)
 				{
+					var height = transform.position.y - resHitData.FirstOrDefault().point.y;
+
 					ledgeData.Angle = Vector3.Angle(transform.forward, surfaceHit.normal);
 					ledgeData.Height = height;
 					ledgeData.SurfaceHitInfo = surfaceHit;
@@ -72,7 +83,6 @@ public class EnvironmentScanner : MonoBehaviour
 			}
 		}
 
-		Debug.DrawRay(origin, Vector3.down * _ledgeRayLength, isHit ? Color.green : Color.blue);
 		return false;
 	}
 	#endregion public-method
