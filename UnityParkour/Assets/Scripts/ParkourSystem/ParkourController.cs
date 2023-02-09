@@ -14,6 +14,8 @@ public class ParkourController : MonoBehaviour
 	private PlayerController _playerController;
 	[SerializeField]
 	private List<ParkourAction> _parkourActions = new List<ParkourAction>();
+	[SerializeField]
+	private ParkourAction _jumpDownAction;
 
 	[SerializeField]
 	private Animator _animator;
@@ -24,12 +26,13 @@ public class ParkourController : MonoBehaviour
 	#region MonoBehaviour-method
 	private void Update()
 	{
-		CheckEnvironment();
+		CheckParkourAction();
+		CheckJumpDown();
 	}
 	#endregion MonoBehaviour-method
 
 	#region private-method
-	private void CheckEnvironment() 
+	private void CheckParkourAction() 
 	{
 		if (_environmentScanner == null) 
 		{
@@ -54,6 +57,20 @@ public class ParkourController : MonoBehaviour
 				break;
 			}
 		}
+	}
+
+	private void CheckJumpDown()
+	{
+		if (_isInAction)
+		{
+			return;
+		}
+		if (!_playerController.IsOnLedge)
+		{
+			return;
+		}
+		_playerController.IsOnLedge = false;
+		DoAction(_jumpDownAction);
 	}
 
 	private async void DoAction(ParkourAction action)

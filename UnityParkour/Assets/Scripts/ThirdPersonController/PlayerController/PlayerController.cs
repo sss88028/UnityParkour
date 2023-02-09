@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
 	public bool IsOnLedge 
 	{
 		get;
-		private set;
+		set;
 	}
 	#endregion public-property
 
@@ -112,15 +112,19 @@ public class PlayerController : MonoBehaviour
 		var moveInput = (new Vector3(h, 0, v)).normalized;
 
 		var isGround = GroundCheck();
+		_playerAnimator.SetBool("IsGround", isGround);
 		var moveDir = GetCameraRotation() * moveInput;
 
-		var velocity = moveDir * _speed;
+		var velocity = Vector3.zero;
 		if (!isGround)
 		{
 			_fallSpeed += _gravity * Time.deltaTime;
+
+			velocity = transform.forward * _speed / 2;
 		}
-		else 
+		else
 		{
+			velocity = moveDir * _speed;
 			_fallSpeed.y = -0.5f;
 
 			LedgeCheck(moveDir);
@@ -135,7 +139,8 @@ public class PlayerController : MonoBehaviour
 
 	private bool GroundCheck() 
 	{
-		return Physics.CheckSphere(transform.TransformPoint(_groundCheckOffset), _groundCheckRadius, _groundCheckLayer);
+		var res = Physics.CheckSphere(transform.TransformPoint(_groundCheckOffset), _groundCheckRadius, _groundCheckLayer);
+		return res;
 	}
 
 	private void LedgeCheck(Vector3 moveDir) 
