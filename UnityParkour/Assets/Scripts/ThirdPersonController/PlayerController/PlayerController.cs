@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
 	#region public-property
 	public bool HasControl
 	{
-		set 
+		set
 		{
 			_hasControl = value;
 			_characterController.enabled = _hasControl;
@@ -51,18 +51,24 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	public float RotateSpeed 
+	public float RotateSpeed
 	{
-		get 
+		get
 		{
 			return _rotateSpeed;
 		}
 	}
 
-	public bool IsOnLedge 
+	public bool IsOnLedge
 	{
 		get;
 		set;
+	}
+
+	public LedgeHitData LedgeHitData
+	{
+		get;
+		private set;
 	}
 	#endregion public-property
 
@@ -149,7 +155,11 @@ public class PlayerController : MonoBehaviour
 		{
 			return;
 		}
-		IsOnLedge = _environmentScanner.LedgeCheck(moveDir);
+		IsOnLedge = _environmentScanner.LedgeCheck(moveDir, out var ledgeHitData);
+		if (IsOnLedge) 
+		{
+			LedgeHitData = ledgeHitData;
+		}
 	}
 
 	private void LerpRotation(Vector3 moveDir)

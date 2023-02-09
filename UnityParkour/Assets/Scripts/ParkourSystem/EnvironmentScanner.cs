@@ -44,8 +44,9 @@ public class EnvironmentScanner : MonoBehaviour
 		return isHit;
 	}
 
-	public bool LedgeCheck(Vector3 moveDir) 
+	public bool LedgeCheck(Vector3 moveDir, out LedgeHitData ledgeData) 
 	{
+		ledgeData = new LedgeHitData();
 		if (moveDir == Vector3.zero)
 		{
 			return false;
@@ -53,12 +54,21 @@ public class EnvironmentScanner : MonoBehaviour
 		var originOffset = 0.5f;
 		var origin = transform.position + moveDir * originOffset + Vector3.up;
 		var isHit = Physics.Raycast(origin, Vector3.down, out var hitData, _ledgeRayLength, _obstacleLayer);
-		if (isHit) 
+		if (isHit)
 		{
-			var height = transform.position.y - hitData.point.y;
-			if (height > _ledgeHeightThreshold) 
+			var surfaceRayOrigin = transform.position + moveDir + Vector3.down * 0.1f;
+			var isHitSurface = Physics.Raycast(surfaceRayOrigin, -moveDir, out var surfaceHit, 2, _obstacleLayer);
+
+			if (isHitSurface)
 			{
-				return true;
+				var height = transform.position.y - hitData.point.y;
+				if (height > _ledgeHeightThreshold)
+				{
+					ledgeData.Angle = Vector3.Angle(transform.forward, surfaceHit.normal);
+					ledgeData.Height = height;
+					ledgeData.SurfaceHitInfo = surfaceHit;
+					return true;
+				}
 			}
 		}
 
@@ -74,4 +84,11 @@ public struct ObstacleHitData
 	public Vector3 MoveDir;
 	public RaycastHit ForwardHitInfo;
 	public RaycastHit HeightHitInfo;
+}
+
+public struct LedgeHitData
+{
+	public float Height;
+	public float Angle;
+	public RaycastHit SurfaceHitInfo;
 }

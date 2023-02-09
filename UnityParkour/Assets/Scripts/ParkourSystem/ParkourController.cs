@@ -65,7 +65,16 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
+		var isObstacleFoward = _environmentScanner.ObstacleCheck(out var _);
+		if (isObstacleFoward)
+		{
+			return;
+		}
 		if (!_playerController.IsOnLedge)
+		{
+			return;
+		}
+		if (_playerController.LedgeHitData.Angle > 50) 
 		{
 			return;
 		}
