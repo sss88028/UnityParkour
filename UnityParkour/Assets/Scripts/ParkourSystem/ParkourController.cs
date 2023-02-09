@@ -99,6 +99,7 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
+		_animator.SetBool("VaultMirror", action.Mirror);
 		_animator.MatchTarget(action.MatchPos, transform.rotation, action.MatchBoyPart, 
 			new MatchTargetWeightMask(action.MathcWeight, 0), action.MatchStartTime, action.MatchTargetTime);
 	}

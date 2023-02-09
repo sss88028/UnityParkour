@@ -6,36 +6,36 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Parkour System/New Parkour Action", fileName = "ParkourAction")]
 public class ParkourAction : ScriptableObject
 {
-    #region private-field
+    #region protected-field
     [SerializeField]
-    private string _stateName;
+    protected string _stateName;
     [SerializeField]
-    private float _minHeight;
+    protected float _minHeight;
     [SerializeField]
-    private float _maxHeight;
+    protected float _maxHeight;
     [SerializeField]
-    private string _obstacleTag;
+    protected string _obstacleTag;
 
     [SerializeField]
-    private bool _rotateToObstacle;
+    protected bool _rotateToObstacle;
 
     [SerializeField]
-    private string _finishStateName = "Locomotion";
+    protected string _finishStateName = "Locomotion";
 
     [Header("Target Matching")]
     [SerializeField]
-    private bool _enableTargetMatching = true;
+    protected bool _enableTargetMatching = true;
     [SerializeField]
-    private AvatarTarget _matchBoyPart;
-    [SerializeField]
-    [Range(0, 1)]
-    private float _matchStartTime;
+    protected AvatarTarget _matchBoyPart;
     [SerializeField]
     [Range(0, 1)]
-    private float _matchTargetTime;
+    protected float _matchStartTime;
     [SerializeField]
-    private Vector3 _mathcWeight = Vector3.up;
-    #endregion private-field
+    [Range(0, 1)]
+    protected float _matchTargetTime;
+    [SerializeField]
+    protected Vector3 _mathcWeight = Vector3.up;
+    #endregion protected-field
 
     #region public-property
     public string StateName 
@@ -65,13 +65,13 @@ public class ParkourAction : ScriptableObject
     public Quaternion TargetRotation 
     {
         get;
-        private set;
+        protected set;
     }
 
     public Vector3 MatchPos 
     {
         get;
-        private set;
+        protected set;
     }
 
     public bool EnableTargetMatching
@@ -113,10 +113,16 @@ public class ParkourAction : ScriptableObject
             return _mathcWeight;
         }
     }
+
+    public bool Mirror 
+    {
+        get;
+        protected set;
+    }
     #endregion public-property
 
     #region public-method
-    public bool CheckIsPossible(CheckResult hitData, Transform player) 
+    public virtual bool CheckIsPossible(ObstacleHitData hitData, Transform player) 
     {
         if (!string.IsNullOrEmpty(_obstacleTag) && hitData.ForwardHitInfo.transform.tag != _obstacleTag) 
         {
