@@ -16,6 +16,8 @@ public class ParkourController : MonoBehaviour
 	private List<ParkourAction> _parkourActions = new List<ParkourAction>();
 	[SerializeField]
 	private ParkourAction _jumpDownAction;
+	[SerializeField]
+	private float _autoJumpDonwHeight = 1;
 
 	[SerializeField]
 	private Animator _animator;
@@ -78,9 +80,14 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
-		if (!Input.GetButton("Jump"))
+		var canJump = _playerController.LedgeHitData.Height < _autoJumpDonwHeight;
+
+		if (!canJump)
 		{
-			return;
+			if (!Input.GetButton("Jump"))
+			{
+				return;
+			}
 		}
 		_playerController.IsOnLedge = false;
 		DoAction(_jumpDownAction);
