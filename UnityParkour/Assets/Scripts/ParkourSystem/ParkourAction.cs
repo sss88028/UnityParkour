@@ -114,7 +114,7 @@ public class ParkourAction : ScriptableObject
         }
     }
 
-    public bool Mirror 
+    public bool IsMirror 
     {
         get;
         protected set;

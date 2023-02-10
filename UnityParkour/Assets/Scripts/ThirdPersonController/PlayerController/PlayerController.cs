@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -67,6 +69,12 @@ public class PlayerController : MonoBehaviour
 		get;
 		private set;
 	}
+
+	public bool IsInAction
+	{
+		get;
+		set;
+	} = false;
 	#endregion public-property
 
 	#region public-method
@@ -80,10 +88,46 @@ public class PlayerController : MonoBehaviour
 			_playerAnimator?.SetFloat(_parameterName, 0);
 		}
 	}
-    #endregion public-method
 
-    #region MonoBehaviour-method
-    private void Awake()
+	public async Task DoAction(string targetStateName, string finishStateName, 
+		MatchTargetParams matchTargetParams, Quaternion targetRotating, bool isRotate = false)
+	{
+		IsInAction = true;
+		_playerAnimator.CrossFade(targetStateName, 0.2f);
+
+		await UniTask.Yield();
+		var animatorInfo = _playerAnimator.GetNextAnimatorStateInfo(0);
+		if (!animatorInfo.IsName(targetStateName))
+		{
+			Debug.LogError($"[ParkourController.DoAction] actionName \"{targetStateName}\" not exist.");
+		}
+
+		var timer = 0f;
+		while (!animatorInfo.IsName(finishStateName))
+		{
+			if (isRotate)
+			{
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotating, RotateSpeed);
+			}
+			if (matchTargetParams != null)
+			{
+				MatchTarget(matchTargetParams);
+			}
+			if (_playerAnimator.IsInTransition(0) && timer > 0.5f)
+			{
+				break;
+			}
+			await UniTask.Yield();
+			animatorInfo = _playerAnimator.GetNextAnimatorStateInfo(0);
+			timer += Time.deltaTime;
+		}
+
+		IsInAction = false;
+	}
+	#endregion public-method
+
+	#region MonoBehaviour-method
+	private void Awake()
 	{
 		CameraTransformProvider.Instance.OnGetTransform += OnGetTransform;
 	}
@@ -224,5 +268,40 @@ public class PlayerController : MonoBehaviour
 		var euler = _currentTransform.rotation.eulerAngles;
 		return Quaternion.Euler(0, euler.y, 0);
 	}
+
+	private void MatchTarget(MatchTargetParams mp)
+	{
+		if (_playerAnimator.isMatchingTarget)
+		{
+			return;
+		}
+		_playerAnimator.SetBool("VaultMirror", mp.IsMirror);
+		_playerAnimator.MatchTarget(mp.MatchPos, transform.rotation, mp.MatchBoyPart,
+			new MatchTargetWeightMask(mp.PosWeight, 0), mp.MatchStartTime, mp.MatchTargetTime);
+	}
 	#endregion private-method
+}
+
+public class MatchTargetParams 
+{
+	public Vector3 MatchPos;
+	public AvatarTarget MatchBoyPart;
+	public Vector3 PosWeight;
+	public float MatchStartTime;
+	public float MatchTargetTime;
+	public bool IsMirror;
+
+	public static implicit operator MatchTargetParams(ParkourAction parkourAction) 
+	{
+		var res = new MatchTargetParams()
+		{
+			MatchPos = parkourAction.MatchPos,
+			MatchBoyPart = parkourAction.MatchBoyPart,
+			PosWeight = parkourAction.MathcWeight,
+			MatchStartTime = parkourAction.MatchStartTime,
+			MatchTargetTime = parkourAction.MatchTargetTime,
+			IsMirror = parkourAction.IsMirror,
+		};
+		return res;
+	}
 }

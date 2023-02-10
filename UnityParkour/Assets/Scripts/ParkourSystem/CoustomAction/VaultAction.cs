@@ -20,8 +20,8 @@ public class VaultAction : ParkourAction
 		hitPoint = hitData.ForwardHitInfo.transform.InverseTransformPoint(hitPoint);
 		var dot = Vector3.Dot(leftDir, hitPoint);
 
-		Mirror = dot > 0;
-		if (Mirror)
+		IsMirror = dot > 0;
+		if (IsMirror)
 		{
 			_matchBoyPart = AvatarTarget.RightHand;
 		}

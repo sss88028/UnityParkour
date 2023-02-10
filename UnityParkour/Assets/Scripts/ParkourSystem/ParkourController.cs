@@ -21,8 +21,6 @@ public class ParkourController : MonoBehaviour
 
 	[SerializeField]
 	private Animator _animator;
-
-	private bool _isInAction = false;
 	#endregion private-field
 
 	#region MonoBehaviour-method
@@ -41,7 +39,7 @@ public class ParkourController : MonoBehaviour
 			return;
 		}
 
-		if (!Input.GetButton("Jump") || _isInAction) 
+		if (!Input.GetButton("Jump") || _playerController.IsInAction) 
 		{
 			return;
 		}
@@ -63,7 +61,7 @@ public class ParkourController : MonoBehaviour
 
 	private void CheckJumpDown()
 	{
-		if (_isInAction)
+		if (_playerController.IsInAction)
 		{
 			return;
 		}
@@ -95,39 +93,14 @@ public class ParkourController : MonoBehaviour
 
 	private async void DoAction(ParkourAction action)
 	{
-		_isInAction = true;
-		_playerController.HasControl = false;
-		_animator.CrossFade(action.StateName, 0.2f);
-
-		await UniTask.Yield();
-		var animatorInfo = _animator.GetNextAnimatorStateInfo(0);
-		if (!animatorInfo.IsName(action.StateName)) 
+		_playerController.SetControl(false);
+		var matchParams = default(MatchTargetParams);
+		if (action.EnableTargetMatching)
 		{
-			Debug.LogError($"[ParkourController.DoAction] actionName \"{action.StateName}\" not exist.");
+			matchParams = action;
 		}
-
-		var timer = 0f;
-		while (!animatorInfo.IsName(action.FinishStateName))
-		{
-			if (action.IsRotateToObstacle) 
-			{
-				transform.rotation = Quaternion.RotateTowards(transform.rotation, action.TargetRotation, _playerController.RotateSpeed);
-			}
-			if (action.EnableTargetMatching) 
-			{
-				MatchTarget(action);
-			}
-			if (_animator.IsInTransition(0) && timer > 0.5f) 
-			{
-				break;
-			}
-			await UniTask.Yield();
-			animatorInfo = _animator.GetNextAnimatorStateInfo(0);
-			timer += Time.deltaTime;
-		}
-
-		_playerController.HasControl = true;
-		_isInAction = false;
+		await _playerController.DoAction(action.StateName, action.FinishStateName, matchParams, action.TargetRotation, action.IsRotateToObstacle);
+		_playerController.SetControl(true);
 	}
 
 	private void MatchTarget(ParkourAction action) 
@@ -136,7 +109,7 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
-		_animator.SetBool("VaultMirror", action.Mirror);
+		_animator.SetBool("VaultMirror", action.IsMirror);
 		_animator.MatchTarget(action.MatchPos, transform.rotation, action.MatchBoyPart, 
 			new MatchTargetWeightMask(action.MathcWeight, 0), action.MatchStartTime, action.MatchTargetTime);
 	}
