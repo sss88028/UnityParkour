@@ -44,16 +44,8 @@ public class PlayerController : MonoBehaviour
 	#region public-property
 	public bool HasControl
 	{
-		set
-		{
-			_hasControl = value;
-			_characterController.enabled = _hasControl;
-
-			if (!_hasControl)
-			{
-				_playerAnimator?.SetFloat(_parameterName, 0);
-			}
-		}
+		get => _hasControl;
+		set => _hasControl = value;
 	}
 
 	public float RotateSpeed
@@ -77,8 +69,21 @@ public class PlayerController : MonoBehaviour
 	}
 	#endregion public-property
 
-	#region MonoBehaviour-method
-	private void Awake()
+	#region public-method
+	public void SetControl(bool hasControl)
+	{
+		_hasControl = hasControl;
+		_characterController.enabled = _hasControl;
+
+		if (!_hasControl)
+		{
+			_playerAnimator?.SetFloat(_parameterName, 0);
+		}
+	}
+    #endregion public-method
+
+    #region MonoBehaviour-method
+    private void Awake()
 	{
 		CameraTransformProvider.Instance.OnGetTransform += OnGetTransform;
 	}
