@@ -212,7 +212,7 @@ public class PlayerController : MonoBehaviour
 		{
 			return;
 		}
-		IsOnLedge = _environmentScanner.LedgeCheck(moveDir, out var ledgeHitData);
+		IsOnLedge = _environmentScanner.ObstacleLedgeCheck(moveDir, out var ledgeHitData);
 		if (IsOnLedge) 
 		{
 			LedgeHitData = ledgeHitData;

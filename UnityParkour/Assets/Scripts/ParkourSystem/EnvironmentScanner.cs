@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnvironmentScanner : MonoBehaviour
 {
 	#region private-field
+	[Header("Obstacle")]
 	[Header("Forward")]
 	[SerializeField]
 	private Vector3 _forwardRayOffset = new Vector3(0, 2.5f, 0);
@@ -21,6 +22,16 @@ public class EnvironmentScanner : MonoBehaviour
 	private float _ledgeRayLength;
 	[SerializeField]
 	private float _ledgeHeightThreshold = 0.75f;
+
+	[Header("Climb")]
+	[SerializeField]
+	private int _climbCount = 15;
+	[SerializeField]
+	private float _climbYOffset = 1.5f;
+	[SerializeField]
+	private float _climbRayLength = 0.8f;
+	[SerializeField]
+	private LayerMask _climbLayer;
 	#endregion private-field
 
 	#region public-method
@@ -45,7 +56,7 @@ public class EnvironmentScanner : MonoBehaviour
 		return isHit;
 	}
 
-	public bool LedgeCheck(Vector3 moveDir, out LedgeHitData ledgeData) 
+	public bool ObstacleLedgeCheck(Vector3 moveDir, out LedgeHitData ledgeData) 
 	{
 		ledgeData = new LedgeHitData();
 		if (moveDir == Vector3.zero)
@@ -80,6 +91,29 @@ public class EnvironmentScanner : MonoBehaviour
 					ledgeData.SurfaceHitInfo = surfaceHit;
 					return true;
 				}
+			}
+		}
+
+		return false;
+	}
+
+	public bool ClimbLedgeCheck(Vector3 moveDir, out RaycastHit ledgeData)
+	{
+		ledgeData = new RaycastHit();
+		if (moveDir == Vector3.zero)
+		{
+			return false;
+		}
+		var origin = transform.position + Vector3.up * _climbYOffset;
+		var offest = new Vector3(0, 0.18f, 0);
+		for (var i = 0; i < _climbCount; i++)
+		{
+			var t = origin + offest * i;
+			var isHit = Physics.Raycast(origin + offest * i, moveDir, out ledgeData, _climbRayLength, _climbLayer);
+			Debug.DrawRay(t, moveDir, isHit ? Color.red : Color.green);
+			if (isHit)
+			{
+				return true;
 			}
 		}
 
