@@ -75,6 +75,12 @@ public class PlayerController : MonoBehaviour
 		get;
 		set;
 	} = false;
+
+	public bool IsHanging
+	{
+		get;
+		set;
+	} = false;
 	#endregion public-property
 
 	#region public-method
@@ -163,6 +169,10 @@ public class PlayerController : MonoBehaviour
 	private void UpdatePos() 
 	{
 		if (!_hasControl) 
+		{
+			return;
+		}
+		if (IsHanging) 
 		{
 			return;
 		}
