@@ -11,6 +11,32 @@ public class ClimbPoint : MonoBehaviour
     private List<Neighbour> _neighbours;
     #endregion private-field
 
+    #region public-method
+    public Neighbour GetNeighbour(Vector2 direction) 
+    {
+        var neighbour = _neighbours.FirstOrDefault((n) =>
+        {
+            if (direction.y != 0)
+            {
+                if (n.Direction.y == direction.y) 
+                {
+                    return true;
+                }
+            }
+            if (direction.x != 0)
+            {
+                if (n.Direction.x == direction.x)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        );
+        return neighbour;
+    }
+    #endregion public-method
+
     #region MonoBehaviour-method
     private void Awake()
     {

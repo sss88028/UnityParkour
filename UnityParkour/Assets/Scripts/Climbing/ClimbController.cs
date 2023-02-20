@@ -9,6 +9,8 @@ public class ClimbController : MonoBehaviour
     private PlayerController _playerController;
     [SerializeField]
     private EnvironmentScanner _environmentScanner;
+
+    private ClimbPoint _currentPoint;
     #endregion private-field
 
     #region MonoBehaviour-method
@@ -31,14 +33,49 @@ public class ClimbController : MonoBehaviour
 
                     if (isHit)
                     {
+                        _currentPoint = climbHit.transform.GetComponent<ClimbPoint>();
                         _playerController.SetControl(false);
                         JumpToLedge("IdleToHang", climbHit.transform, 0.41f, 0.54f);
                     }
                 }
             }
         }
-        else 
+        else
         {
+            var h = Mathf.Round(Input.GetAxis("Horizontal"));
+            var v = Mathf.Round(Input.GetAxis("Vertical"));
+
+            var inputDir = new Vector2(h, v);
+            if (_playerController.IsInAction || inputDir == Vector2.zero) 
+            {
+                return;
+            }
+
+            var neighbour = _currentPoint.GetNeighbour(inputDir);
+            if (neighbour == null) 
+            {
+                return;
+            }
+            if (neighbour.ConnectionType == ConnectionType.Jump && Input.GetButton("Jump")) 
+            {
+                _currentPoint = neighbour.Point;
+                if (neighbour.Direction.y == 1)
+                {
+                    JumpToLedge("HopUp", _currentPoint.transform, 0.34f, 0.65f);
+                }
+                else if (neighbour.Direction.y == -1)
+                {
+                    JumpToLedge("HopDown", _currentPoint.transform, 0.31f, 0.65f);
+                }
+                else if (neighbour.Direction.x == 1)
+                {
+                    JumpToLedge("HopRight", _currentPoint.transform, 0.20f, 0.50f);
+                }
+                else if (neighbour.Direction.x == -1)
+                {
+                    JumpToLedge("HopLeft", _currentPoint.transform, 0.20f, 0.50f);
+                }
+            }
         }
     }
 

@@ -43,6 +43,10 @@ public class ParkourController : MonoBehaviour
 		{
 			return;
 		}
+		if (_playerController.IsHanging)
+		{
+			return;
+		}
 
 		var isObstacleFoward = _environmentScanner.ObstacleCheck(out var checkResult);
 		if (!isObstacleFoward) 
