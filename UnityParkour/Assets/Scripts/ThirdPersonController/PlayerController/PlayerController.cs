@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
 		MatchTargetParams matchTargetParams, Quaternion targetRotating, bool isRotate = false)
 	{
 		IsInAction = true;
-		_playerAnimator.CrossFade(targetStateName, 0.2f);
+		_playerAnimator.CrossFadeInFixedTime(targetStateName, 0.2f);
 
 		await UniTask.Yield();
 		var animatorInfo = _playerAnimator.GetNextAnimatorStateInfo(0);
@@ -107,11 +107,14 @@ public class PlayerController : MonoBehaviour
 		{
 			Debug.LogError($"[ParkourController.DoAction] actionName \"{targetStateName}\" not exist.");
 		}
+		var animatorLength = animatorInfo.length;
+		var rotateStartTime = (matchTargetParams != null) ? matchTargetParams.MatchStartTime : 0f;
 
 		var timer = 0f;
 		while (!animatorInfo.IsName(finishStateName))
 		{
-			if (isRotate)
+			var normalizeTime = timer / animatorLength;
+			if (isRotate && timer > rotateStartTime)
 			{
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotating, RotateSpeed);
 			}
