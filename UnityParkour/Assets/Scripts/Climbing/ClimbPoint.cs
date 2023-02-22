@@ -9,7 +9,14 @@ public class ClimbPoint : MonoBehaviour
     #region private-field
     [SerializeField]
     private List<Neighbour> _neighbours;
+
+    [SerializeField]
+    private bool _isMountPoint;
     #endregion private-field
+
+    #region public-property
+    public bool IsMountPoint => _isMountPoint;
+    #endregion public-property
 
     #region public-method
     public Neighbour GetNeighbour(Vector2 direction) 

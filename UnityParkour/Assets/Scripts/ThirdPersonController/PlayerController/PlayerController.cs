@@ -95,6 +95,11 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	public void EnableCharacterController(bool enable) 
+	{
+		_characterController.enabled = enable;
+	}
+
 	public async Task DoAction(string targetStateName, string finishStateName, 
 		MatchTargetParams matchTargetParams, Quaternion targetRotating, bool isRotate = false)
 	{

@@ -304,6 +304,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 1
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1001 &261924790
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -445,6 +446,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 1
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1 &302833250
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,6 +826,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 1
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1 &576615433
 GameObject:
   m_ObjectHideFlags: 0
@@ -1838,6 +1841,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 1
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1001 &1351989556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1979,6 +1983,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 1
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1 &1569943080
 GameObject:
   m_ObjectHideFlags: 0
@@ -2132,6 +2137,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 1
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1 &1622171166
 GameObject:
   m_ObjectHideFlags: 0
@@ -2278,6 +2284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _neighbours: []
+  _isMountPoint: 1
 --- !u!1 &1819879866
 GameObject:
   m_ObjectHideFlags: 0
@@ -2326,6 +2333,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 0
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1 &1923196645
 GameObject:
   m_ObjectHideFlags: 0
@@ -2844,6 +2852,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 1
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1 &2088823287
 GameObject:
   m_ObjectHideFlags: 0
@@ -2987,6 +2996,7 @@ MonoBehaviour:
     Direction: {x: -1, y: 0}
     ConnectionType: 1
     IsTwoWay: 1
+  _isMountPoint: 1
 --- !u!1001 &4077627749779838089
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,5 +1,7 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ClimbController : MonoBehaviour
@@ -59,6 +61,12 @@ public class ClimbController : MonoBehaviour
             var inputDir = new Vector2(h, v);
             if (inputDir == Vector2.zero) 
             {
+                return;
+            }
+
+            if (_currentPoint.IsMountPoint && inputDir.y == 1) 
+            {
+                Mount();
                 return;
             }
 
@@ -127,8 +135,18 @@ public class ClimbController : MonoBehaviour
     {
         _playerController.IsHanging = false;
         await _playerController.DoAction("JumpFromHang", "HangingIdle", null, new Quaternion());
-        _playerController.SetControl(true);
         _playerController.ResetTargetRotation();
+        _playerController.SetControl(true);
+    }
+
+    private async void Mount()
+    {
+        _playerController.IsHanging = false;
+        await _playerController.DoAction("HangToCrouch", "HangingIdle", null, new Quaternion());
+        _playerController.EnableCharacterController(true);
+        await UniTask.Delay(500);
+        _playerController.ResetTargetRotation();
+        _playerController.SetControl(true);
     }
 
     private Vector3 GetHandPos(Transform ledge, Vector3? handOffset, AvatarTarget hand = AvatarTarget.RightHand) 
