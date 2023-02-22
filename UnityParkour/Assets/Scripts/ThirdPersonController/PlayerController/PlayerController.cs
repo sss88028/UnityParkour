@@ -133,6 +133,11 @@ public class PlayerController : MonoBehaviour
 
 		IsInAction = false;
 	}
+
+	public void ResetTargetRotation() 
+	{
+		_targetRotation = transform.rotation;
+	}
 	#endregion public-method
 
 	#region MonoBehaviour-method

@@ -42,11 +42,22 @@ public class ClimbController : MonoBehaviour
         }
         else
         {
+            if (_playerController.IsInAction)
+            {
+                return;
+            }
+
+            if (Input.GetButton("Drop")) 
+            {
+                JumpFromHang();
+                return;
+            }
+
             var h = Mathf.Round(Input.GetAxis("Horizontal"));
             var v = Mathf.Round(Input.GetAxis("Vertical"));
 
             var inputDir = new Vector2(h, v);
-            if (_playerController.IsInAction || inputDir == Vector2.zero) 
+            if (inputDir == Vector2.zero) 
             {
                 return;
             }
@@ -110,6 +121,14 @@ public class ClimbController : MonoBehaviour
         await _playerController.DoAction(anim, "HangingIdle", matchPatams, targetRot, true);
 
         _playerController.IsHanging = true;
+    }
+
+    private async void JumpFromHang()
+    {
+        _playerController.IsHanging = false;
+        await _playerController.DoAction("JumpFromHang", "HangingIdle", null, new Quaternion());
+        _playerController.SetControl(true);
+        _playerController.ResetTargetRotation();
     }
 
     private Vector3 GetHandPos(Transform ledge, Vector3? handOffset, AvatarTarget hand = AvatarTarget.RightHand) 
